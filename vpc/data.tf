@@ -6,8 +6,14 @@ data "aws_availability_zones" "available" {
      
      default  = true
  }
-# data "vpc_peering_connection_id" "peering" {
-#   value=
-# }
+ data "aws_route_table" "main" {
+   vpc_id = data.aws_vpc.default.id
+
+ filter {
+   name= "association.main"
+   values=["true"]
+ }
+
+ }
 
 
