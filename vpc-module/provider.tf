@@ -14,7 +14,7 @@ terraform {
   backend "s3" {
 
     bucket         = "ram-remote-state-dev"
-    key            = "remote-state-dev-vpc"
+    key            = "remote-state-dev-vpc-mod"
     region         = "ap-south-2"
     dynamodb_table = "ram-locking-dev"
 
