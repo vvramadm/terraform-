@@ -1,5 +1,6 @@
 module "vpc" {
-    source = "../vpc"
+    #source = "../vpc"
+    source = "git::https://github.com/vvramadm/terraform-.git?ref=main"
     projcet_name = var.projcet_name
     environment = var.environment
     common_tags = var.common_tags
