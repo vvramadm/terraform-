@@ -3,7 +3,7 @@
  }
 
  output "az_info" {
-  value =  module.vpc.az_zones.names
+  value =  module.vpc.az_zones.az_info
  }
 
  output "default_vpc_info" {

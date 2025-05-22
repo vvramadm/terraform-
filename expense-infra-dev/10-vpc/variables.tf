@@ -1,13 +1,12 @@
 
 variable "projcet_name" {
 
-   
-    default= {}
+  default = "expense"
 }
 
 variable "environment" {
-  
-  default = {}
+
+  default = "dev"
 }
 
 variable "enable_dns_hostnames" {
@@ -18,65 +17,39 @@ variable "vpc_cidr" {
   default = "10.0.0.0/16"
 }
 variable "common_tags" {
-  default = {}
+  default = {
+    project     = "expense"
+    terraform   = "true"
+    environment = "dev"
+  }
 }
 
 variable "tags" {
-   default = {}
+  default = {}
 }
 
- variable "igw_tags" {
- default = {}
-} 
+variable "igw_tags" {
+  default = {}
+}
 
 variable "public_subnet_cidrs" {
-  type = list
-  validation {
-    condition = length(var.public_subnet_cidrs)==2
-    error_message = "please provide 2 valid subnet cidr"
-  }
+  default = ["10.0.1.0/24", "10.0.2.0/24","10.0.3.0/24"]
 }
 
 variable "private_subnet_cidrs" {
-  type = list
-  validation {
-    condition = length(var.private_subnet_cidrs)==2
-    error_message = "please provide 2 valid subnet cidr"
-  }
+  default = ["10.0.11.0/24", "10.0.12.0/24","10.0.13.0/24"]
 }
 
 variable "database_subnet_cidrs" {
-  type = list
-  validation {
-    condition = length(var.database_subnet_cidrs )==2
-    error_message = "please provide 2 valid subnet cidr"
-  }
+  default = ["10.0.21.0/24", "10.0.22.0/24","10.0.23.0/24"]
 }
 
 variable "db_subnet_group_tags" {
 
- default =  {}
- }
-
-
-
- variable "public_route_table_tags" {
-   default = {}
-}
-
-variable "private_route_table_tags" {
   default = {}
- }
-variable "database_route_table_tags" {
- default = {}
- }
-
-variable "is_peering_required" {
-  type = bool
-   default = false
 }
 
- variable "vpc_peering_tags" {
-   default = {}
-  
- }
+
+variable "public_route_table_tags" {
+  default = "public"
+}
