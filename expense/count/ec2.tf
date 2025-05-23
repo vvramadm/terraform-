@@ -6,7 +6,7 @@ resource "aws_instance" "server" {
   vpc_security_group_ids = [aws_security_group.allow_ssh_terraform.id]
   tags = {
     #Name = "Server ${count.index}"
-    Name = "testserver"
+    Name = "test-server"
   }
   key_name = var.key_name  
 }
