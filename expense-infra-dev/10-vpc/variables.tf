@@ -1,5 +1,5 @@
 
-variable "projcet_name" {
+variable "project_name"{
 
   default = "expense"
 }
