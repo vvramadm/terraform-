@@ -36,6 +36,13 @@ variable "bastion_sg_tags"{
   
 }
 
+variable "ansible_sg_tags"{
+    default = {
+        component = "ansible"
+    }
+  
+}
+
 variable "common_tags"{
     default = {
 

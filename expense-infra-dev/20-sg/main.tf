@@ -38,6 +38,16 @@ vpc_id = local.vpc_id
 sg_tags = var.bastion_sg_tags
 }
 
+module "ansible_sg" {
+source = "../terraform-aws-security-group"
+project_name= var.project_name
+environment = var.environment
+sg_name = "ansible"
+common_tags = var.common_tags
+vpc_id = local.vpc_id
+sg_tags = var.ansible_sg_tags
+}
+
 resource "aws_security_group_rule" "mysql_backend" {
 type = "ingress"
 from_port = 3306
