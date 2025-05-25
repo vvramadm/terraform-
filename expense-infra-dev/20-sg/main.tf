@@ -136,6 +136,6 @@ from_port = 22
 to_port = 22
 protocol = "tcp"
 cidr_blocks = ["0.0.0.0/0"]
-security_group_id = module.frontend_sg.id
+security_group_id = module.ansible_sg.id
 
 }
