@@ -104,7 +104,7 @@ security_group_id = module.frontend_sg.id
 
 
 
-resource "aws_security_group_rule" "ansible_bastion" {
+resource "aws_security_group_rule" "mysql_ansible" {
 type = "ingress"
 from_port = 22
 to_port = 22
