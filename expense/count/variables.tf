@@ -1,6 +1,6 @@
 variable "ami_id" {
   type        = string
-  default     = "ami-098fef4b912c71b0e"
+  default     = "ami-0ac9842766458731a"
   description = "terraform practive amazon linux t3 micro"
 
 }
