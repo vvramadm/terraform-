@@ -45,7 +45,7 @@ resource "aws_internet_gateway" "main" {
       vpc_id = aws_vpc.main.id
       cidr_block = var.private_subnet_cidrs[count.index]
       availability_zone = local.az_zones[count.index]
-      map_public_ip_on_launch = true
+      map_public_ip_on_launch = false
       tags = merge(
           var.common_tags,
           var.tags,
@@ -60,7 +60,7 @@ resource "aws_internet_gateway" "main" {
       vpc_id = aws_vpc.main.id
       cidr_block = var.database_subnet_cidrs[count.index]
       availability_zone = local.az_zones[count.index]
-      map_public_ip_on_launch = true
+      map_public_ip_on_launch = false
       tags = merge(
           var.common_tags,
           var.tags,
@@ -85,20 +85,27 @@ resource "aws_internet_gateway" "main" {
       ) 
   }
 
-# # resource "aws_nat_gateway" "main" {
-# #   allocation_id = aws_eip_nat.id
-# #   subnet_id = aws_subnet.public[0].id
-# #   tags = merge(
-# #     var.common_tags,
-# #     var.tags,
-# #     {
-# #         Name=local.resource_name
-# #     }
-# #   )
+# resource "aws_eip" "nat_eip" {
+#   vpc       =  true
+#   depends_on = [aws_internet_gateway.main]
+# }
 
-# #   depends_on = [ aws_internet_gateway.main ]
-# # }
-# # #public route table
+#  resource "aws_nat_gateway" "main" {
+#  allocation_id = aws_eip.nat_eip.id
+#    subnet_id = aws_subnet.public[0].id
+#    tags = merge(
+#      var.common_tags,
+#      var.tags,
+#      {
+#          Name=local.resource_name
+#      }
+#    )
+
+#    depends_on = [ aws_internet_gateway.main ]
+#  }
+
+
+# #public route table
   resource "aws_route_table" "public" {
     vpc_id = aws_vpc.main.id
     tags = merge(
@@ -139,70 +146,70 @@ resource "aws_internet_gateway" "main" {
     gateway_id = aws_internet_gateway.main.id
   }
 
-# resource "aws_nat_gateway" "private_nat" {
-# #      route_table_id = aws_route_table.private.id
-# #      destination_cidr_block = "0.0.0.0"
-# #      nat_gateway_id = aws_nat_gateway.main.id 
-# #  }
+# resource "aws_route" "private_nat" {
+# route_table_id = aws_route_table.private.id
+# destination_cidr_block = "0.0.0.0/0"
+# nat_gateway_id = aws_nat_gateway.main.id
+# }
 
-# #  resource "aws_nat_gateway" "database_nat" {
-# #      route_table_id = aws_route_table.private.id
-# #      destination_cidr_block = "0.0.0.0"
-# #      nat_gateway_id = aws_nat_gateway.main.id 
-# #  }
+# resource "aws_route" "database_nat" {
+#   route_table_id = aws_route_table.database.id
+#   destination_cidr_block = "0.0.0.0/0"
+#   nat_gateway_id = aws_nat_gateway.main.id 
+# }
 
   resource "aws_route_table_association" "public" {
-    count = length(var.public_subnet_cidrs)
-    subnet_id = aws_subnet.public[count.index].id
-    route_table_id = aws_route_table.public.id
-  }
-  resource "aws_route_table_association" "private" {
-    count = length(var.private_subnet_cidrs)
-    subnet_id = aws_subnet.private[count.index].id
-    route_table_id = aws_route_table.private.id
-  }
-  resource "aws_route_table_association" "database" {
-    count = length(var.database_subnet_cidrs)
-    subnet_id = aws_subnet.database[count.index].id
-    route_table_id = aws_route_table.database.id
-  }
-   resource "aws_vpc_peering_connection" "peering" {
-     count = var.is_peering_required?1:0
-     vpc_id = aws_vpc.main.id #requestor
-   peer_vpc_id = data.aws_vpc.default.id #acceptor
-   auto_accept = true
-   tags = merge(
-       var.common_tags,
-       var.vpc_peering_tags,
-       {
-           Name="${local.resource_name}-default"
-       }
-   )
+     count = length(var.public_subnet_cidrs)
+     subnet_id = aws_subnet.public[count.index].id
+     route_table_id = aws_route_table.public.id
    }
-# # # #peering route
-    resource "aws_route" "public_peering" {
-        count = var.is_peering_required?1:0
-        route_table_id = aws_route_table.public.id
-        destination_cidr_block = data.aws_vpc.default.cidr_block
+   resource "aws_route_table_association" "private" {
+     count = length(var.private_subnet_cidrs)
+     subnet_id = aws_subnet.private[count.index].id
+     route_table_id = aws_route_table.private.id
+   }
+   resource "aws_route_table_association" "database" {
+     count = length(var.database_subnet_cidrs)
+     subnet_id = aws_subnet.database[count.index].id
+     route_table_id = aws_route_table.database.id
+   }
+    resource "aws_vpc_peering_connection" "peering" {
+      count = var.is_peering_required?1:0
+      vpc_id = aws_vpc.main.id #requestor
+    peer_vpc_id = data.aws_vpc.default.id #acceptor
+    auto_accept = true
+    tags = merge(
+        var.common_tags,
+        var.vpc_peering_tags,
+        {
+            Name="${local.resource_name}-default"
+        }
+    )
+    }
+#peering route
+     resource "aws_route" "public_peering" {
+         count = var.is_peering_required?1:0
+         route_table_id = aws_route_table.public.id
+         destination_cidr_block = data.aws_vpc.default.cidr_block
+        vpc_peering_connection_id = aws_vpc_peering_connection.peering[count.index].id
+     }
+     resource "aws_route" "private_peering" {
+         count = var.is_peering_required?1:0
+         route_table_id = aws_route_table.private.id
+         destination_cidr_block = data.aws_vpc.default.cidr_block
        vpc_peering_connection_id = aws_vpc_peering_connection.peering[count.index].id
-    }
-    resource "aws_route" "private_peering" {
-        count = var.is_peering_required?1:0
-        route_table_id = aws_route_table.private.id
-        destination_cidr_block = data.aws_vpc.default.cidr_block
-      vpc_peering_connection_id = aws_vpc_peering_connection.peering[count.index].id
-    }
-    resource "aws_route" "database_peering" {
-        count = var.is_peering_required?1:0
-        route_table_id = aws_route_table.database.id
-        destination_cidr_block =data.aws_vpc.default.cidr_block
-        vpc_peering_connection_id = aws_vpc_peering_connection.peering[count.index].id
+     }
+     resource "aws_route" "database_peering" {
+         count = var.is_peering_required?1:0
+         route_table_id = aws_route_table.database.id
+         destination_cidr_block =data.aws_vpc.default.cidr_block
+         vpc_peering_connection_id = aws_vpc_peering_connection.peering[count.index].id
+
+     }
+     resource "aws_route" "default_peering" {
+         count = var.is_peering_required?1:0
+         route_table_id = data.aws_route_table.main.route_table_id
+         destination_cidr_block = var.vpc_cidr
+         vpc_peering_connection_id = aws_vpc_peering_connection.peering[count.index].id
  
-    }
-    resource "aws_route" "default_peering" {
-        count = var.is_peering_required?1:0
-        route_table_id = data.aws_route_table.main.route_table_id
-        destination_cidr_block = var.vpc_cidr
-        vpc_peering_connection_id = aws_vpc_peering_connection.peering[count.index].id
- 
-    }
+     }

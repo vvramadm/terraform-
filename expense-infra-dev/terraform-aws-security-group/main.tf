@@ -5,7 +5,6 @@ resource "aws_security_group" "main" {
     tags = merge(
 
         var.common_tags,
-        var.sg_tags,
 
         {
             Name= local.sg_final_name

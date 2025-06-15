@@ -1,6 +1,6 @@
 variable "ami_id" {
   type        = string
-  default    = "ami-098fef4b912c71b0e"
+  default    = "ami-021278a2ad986eab0"
   description = "terraform practive amazon linux t3 micro"
 
 }
@@ -38,7 +38,7 @@ variable "tags" {
 
 variable "sg_name" {
 
-  default = "allow_ssh"
+  default = "allow_ssh12"
 }
 
 variable "sg_description" {

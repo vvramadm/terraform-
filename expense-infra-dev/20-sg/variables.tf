@@ -42,6 +42,12 @@ variable "ansible_sg_tags"{
     }
   
 }
+variable "app_alb_sg_tags"{
+    default = {
+        component = "app_alb"
+    }
+  
+}
 
 variable "common_tags"{
     default = {
@@ -55,6 +61,11 @@ variable "common_tags"{
 variable "sg_name"{
 
     default = "mysql"
+}
+
+variable "vpn_sg_tags"{
+
+    default = "vpn"
 }
 
 /* variable "vpc_id"{
