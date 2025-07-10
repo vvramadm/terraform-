@@ -21,8 +21,8 @@ data "aws_ami" "devops" {
     filter {
       
       name = "name"
-      values = ["OpenVPN Access Server Community Image-3b5882c4-*"]
-      
+      values = ["OpenVPN Access Server (5 Connected Devices) / Self-Hosted VPN"]
+
     }
     filter {
       name = "root-device-type"
