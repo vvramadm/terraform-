@@ -6,7 +6,7 @@ terraform {
 
       source = "hashicorp/aws"
 
-      version = "5.92.0"
+      version = ">= 6.0.0"
 
     }
 

@@ -1,6 +1,9 @@
-resource "aws_instance" "backend" {
+module "backend" {
+ 
+  source  = "terraform-aws-modules/ec2-instance/aws"
   ami                    = data.aws_ami.devops.id # golden AMI
-  vpc_security_group_ids = [data.aws_ssm_parameter.backend_sg_id.value]
+  name = local.resource_name
+  vpc_security_group_ids = [local.backend_sg_id]
   instance_type          = var.instance_type
   subnet_id   = local.private_subnet_id
   tags = merge(
@@ -14,13 +17,13 @@ resource "aws_instance" "backend" {
 resource "null_resource" "backend" {
   # Changes to any instance of the instance requires re-provisioning
   triggers = {
-    instance_id = aws_instance.backend.id
+    instance_id = module.backend.id
   }
 
   # Bootstrap script can run on any instance of the cluster
   # So we just choose the first in this case
   connection {
-    host = aws_instance.backend.private_ip
+    host = module.backend.private_ip
     type = "ssh"
     user     = "ec2-user"
     password = "ram123"
@@ -35,31 +38,31 @@ resource "null_resource" "backend" {
     # Bootstrap script called with private_ip of each node in the cluster
     inline = [
       "chmod +x /tmp/backend.sh",
-      "sudo sh /tmp/backend.sh ${var.environment}"
+      "sudo sh /tmp/backend.sh ${var.backend_tags.component} ${var.environment}"
     ]
   }
 }
 
 resource "aws_ec2_instance_state" "backend" {
-  instance_id = aws_instance.backend.id
+  instance_id = module.backend.id
   state       = "stopped"
   depends_on = [null_resource.backend]
 }
 
 resource "aws_ami_from_instance" "backend" {
   name               = local.resource_name
-  source_instance_id = aws_instance.backend.id
+  source_instance_id = module.backend.id
   depends_on = [aws_ec2_instance_state.backend]
 }
 
 resource "null_resource" "backend_delete" {
 
   triggers = {
-    instance_id = aws_instance.backend.id
+    instance_id = module.backend.id
   }
 
   provisioner "local-exec" {
-    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.backend.id}"
+    command = "aws ec2 terminate-instances --instance-ids ${module.backend.id}"
   }
 
   depends_on = [aws_ami_from_instance.backend]
@@ -104,7 +107,7 @@ resource "aws_launch_template" "backend" {
 
 resource "aws_autoscaling_group" "backend" {
   name                      = local.resource_name
-  max_size                  = 10
+  max_size                  = 4
   min_size                  = 1
   health_check_grace_period = 180 # 3 minutes for instance to intialise
   health_check_type         = "ELB"
