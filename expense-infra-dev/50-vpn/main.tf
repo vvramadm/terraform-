@@ -5,6 +5,7 @@
    ami = data.aws_ami.devops.id
    instance_type          = var.instance_type
    key_name               = var.key_name
+    create_security_group = false
    #monitoring             = true
    vpc_security_group_ids = [local.vpn_sg_id]
    subnet_id              = local.public_subnet_ids
