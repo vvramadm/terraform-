@@ -22,7 +22,7 @@ data "aws_ami" "devops" {
     filter {
       
       name = "name"
-      values = ["OpenVPN Access Server Community Image-60263051-*"]
+      values = ["OpenVPN Access Server Community"]
     }
     filter {
       name = "root-device-type"
