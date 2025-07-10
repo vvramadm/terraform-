@@ -16,13 +16,12 @@ data  "aws_ssm_parameter" "vpc_id" {
 }
 
 data "aws_ami" "devops" {
-
     most_recent = true
     owners = [222352935292] # aws account id
     filter {
       
       name = "name"
-      values = ["OpenVPN Access Server Community Image-3b5882c4*"]
+      values = ["OpenVPN Access Server Community Image-3b5882c4-*"]
     }
     filter {
       name = "root-device-type"
