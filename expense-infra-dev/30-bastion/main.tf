@@ -7,7 +7,7 @@
    key_name               = var.key_name
    #monitoring             = true
    vpc_security_group_ids = [local.bastion_sg_id]
-   subnet_id              = local.public_subnet_ids
+   subnet_id              = local.public_subnet_id
 
    tags = {
      Terraform   = "true"
@@ -15,6 +15,11 @@
    }
  }
 
+resource "aws_ec2_instance_state" "ec2_bastion" {
+  instance_id = module.ec2_bastion.id
+  #state       = "stopped"
+  state       = "running"
+}
 
 # module "ec2_bastion" {
 #   source  = "../terraform-aws-ec2"
