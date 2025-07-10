@@ -15,11 +15,11 @@
    }
  }
 
-resource "aws_ec2_instance_state" "ec2_bastion" {
-  instance_id = module.ec2_bastion.id
-  #state       = "stopped"
-  state       = "running"
-}
+# resource "aws_ec2_instance_state" "ec2_bastion" {
+#   instance_id = module.ec2_bastion.id
+#   #state       = "stopped"
+#   state       = "running"
+# }
 
 # module "ec2_bastion" {
 #   source  = "../terraform-aws-ec2"
