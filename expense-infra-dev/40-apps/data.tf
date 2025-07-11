@@ -49,7 +49,7 @@ data "aws_ami" "devops" {
     filter {
       
       name = "name"
-      values = ["test555"]
+      values = ["test5555"]
     }
     filter {
       name = "root-device-type"
