@@ -13,6 +13,7 @@
      Terraform   = "true"
      Environment = "dev"
    }
+   
  }
 
 # resource "aws_ec2_instance_state" "ec2_bastion" {

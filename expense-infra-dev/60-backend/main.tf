@@ -106,75 +106,75 @@ resource "aws_launch_template" "backend" {
   }
 }
 
-resource "aws_autoscaling_group" "backend" {
-  name                      = local.resource_name
-  max_size                  = 4
-  min_size                  = 1
-  health_check_grace_period = 180 # 3 minutes for instance to intialise
-  health_check_type         = "ELB"
-  desired_capacity          = 1
-  target_group_arns = [aws_lb_target_group.backend.arn]
-  launch_template {
-    id      = aws_launch_template.backend.id
-    version = "$Latest"
-  }
-  vpc_zone_identifier       = local.private_subnet_ids
-  instance_refresh {
-    strategy = "Rolling"
-    preferences {
-      min_healthy_percentage = 50
-    }
-    triggers = ["launch_template"]
-  }
+# resource "aws_autoscaling_group" "backend" {
+#   name                      = local.resource_name
+#   max_size                  = 4
+#   min_size                  = 1
+#   health_check_grace_period = 180 # 3 minutes for instance to intialise
+#   health_check_type         = "ELB"
+#   desired_capacity          = 1
+#   target_group_arns = [aws_lb_target_group.backend.arn]
+#   launch_template {
+#     id      = aws_launch_template.backend.id
+#     version = "$Latest"
+#   }
+#   vpc_zone_identifier       = local.private_subnet_ids
+#   instance_refresh {
+#     strategy = "Rolling"
+#     preferences {
+#       min_healthy_percentage = 50
+#     }
+#     triggers = ["launch_template"]
+#   }
 
-  tag {
-    key                 = "Name"
-    value               = local.resource_name
-    propagate_at_launch = true
-  }
+#   tag {
+#     key                 = "Name"
+#     value               = local.resource_name
+#     propagate_at_launch = true
+#   }
 
-  timeouts {
-    delete = "10m"
-  }
+#   timeouts {
+#     delete = "10m"
+#   }
 
-  tag {
-    key                 = "Project"
-    value               = "expense"
-    propagate_at_launch = false
-  }
+#   tag {
+#     key                 = "Project"
+#     value               = "expense"
+#     propagate_at_launch = false
+#   }
 
-  tag {
-    key                 = "Environment"
-    value               = "dev"
-    propagate_at_launch = false
-  }
-}
+#   tag {
+#     key                 = "Environment"
+#     value               = "dev"
+#     propagate_at_launch = false
+#   }
+# }
 
-resource "aws_autoscaling_policy" "backend" {
-  name                   = "${local.resource_name}-backend"
-  policy_type            = "TargetTrackingScaling"
-  autoscaling_group_name = aws_autoscaling_group.backend.name
-  target_tracking_configuration {
-    predefined_metric_specification {
-      predefined_metric_type = "ASGAverageCPUUtilization"
-    }
+# resource "aws_autoscaling_policy" "backend" {
+#   name                   = "${local.resource_name}-backend"
+#   policy_type            = "TargetTrackingScaling"
+#   autoscaling_group_name = aws_autoscaling_group.backend.name
+#   target_tracking_configuration {
+#     predefined_metric_specification {
+#       predefined_metric_type = "ASGAverageCPUUtilization"
+#     }
 
-    target_value = 70.0
-  }
-}
+#     target_value = 70.0
+#   }
+# }
 
-resource "aws_lb_listener_rule" "backend" {
-  listener_arn = data.aws_ssm_parameter.app_alb_listener_arn.value
-  priority     = 10
+# resource "aws_lb_listener_rule" "backend" {
+#   listener_arn = data.aws_ssm_parameter.app_alb_listener_arn.value
+#   priority     = 10
 
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.backend.arn
-  }
+#   action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.backend.arn
+#   }
 
-  condition {
-    host_header {
-      values = ["backend.app-${var.environment}.${var.domain_name}"]
-    }
-  }
-}
+#   condition {
+#     host_header {
+#       values = ["backend.app-${var.environment}.${var.domain_name}"]
+#     }
+#   }
+# }
