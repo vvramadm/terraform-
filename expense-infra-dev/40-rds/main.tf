@@ -17,7 +17,7 @@ module "db" {
   vpc_security_group_ids = [local.mysql_sg_id]
   manage_master_user_password = false
 
- 
+ skip_final_snapshot = true
 
   tags = merge(
     #var.common_tags,
@@ -41,32 +41,11 @@ module "db" {
   
 }
 
-module "zones" {
-  source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "~> 3.0"
 
-  zones = {
-    "terraform-aws-modules-example.com" = {
-      comment = "terraform-aws-modules-examples.com (production)"
-      tags = {
-        env = "production"
-      }
-    }
-
-    "myapp.com" = {
-      comment = "myapp.com"
-    }
-  }
-
-  tags = {
-    ManagedBy = "Terraform"
-  }
-}
 
 module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
-  version = "~> 3.0"
-
+  
   zone_name = var.zone_name
 
   records = [

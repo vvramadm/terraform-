@@ -85,24 +85,24 @@ resource "aws_internet_gateway" "main" {
       ) 
   }
 
-# resource "aws_eip" "nat_eip" {
-#   vpc       =  true
-#   depends_on = [aws_internet_gateway.main]
-# }
+resource "aws_eip" "nat_eip" {
+  vpc       =  true
+  depends_on = [aws_internet_gateway.main]
+}
 
-#  resource "aws_nat_gateway" "main" {
-#  allocation_id = aws_eip.nat_eip.id
-#    subnet_id = aws_subnet.public[0].id
-#    tags = merge(
-#      var.common_tags,
-#      var.tags,
-#      {
-#          Name=local.resource_name
-#      }
-#    )
+ resource "aws_nat_gateway" "main" {
+ allocation_id = aws_eip.nat_eip.id
+   subnet_id = aws_subnet.public[0].id
+   tags = merge(
+     var.common_tags,
+     var.tags,
+     {
+         Name=local.resource_name
+     }
+   )
 
-#    depends_on = [ aws_internet_gateway.main ]
-#  }
+   depends_on = [ aws_internet_gateway.main ]
+ }
 
 
 # #public route table
@@ -146,17 +146,17 @@ resource "aws_internet_gateway" "main" {
     gateway_id = aws_internet_gateway.main.id
   }
 
-# resource "aws_route" "private_nat" {
-# route_table_id = aws_route_table.private.id
-# destination_cidr_block = "0.0.0.0/0"
-# nat_gateway_id = aws_nat_gateway.main.id
-# }
+resource "aws_route" "private_nat" {
+route_table_id = aws_route_table.private.id
+destination_cidr_block = "0.0.0.0/0"
+nat_gateway_id = aws_nat_gateway.main.id
+}
 
-# resource "aws_route" "database_nat" {
-#   route_table_id = aws_route_table.database.id
-#   destination_cidr_block = "0.0.0.0/0"
-#   nat_gateway_id = aws_nat_gateway.main.id 
-# }
+resource "aws_route" "database_nat" {
+  route_table_id = aws_route_table.database.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id = aws_nat_gateway.main.id 
+}
 
   resource "aws_route_table_association" "public" {
      count = length(var.public_subnet_cidrs)
