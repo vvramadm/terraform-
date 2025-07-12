@@ -43,7 +43,7 @@ module "records" {
   records = [
     {
   
-      name    = "expense-${var.environment}"
+      name    = "expense-${var.environment}" #expense-dev.ramops.online
       type    = "A"
       alias = {
       name                   = module.web_alb.dns_name

@@ -19,6 +19,10 @@ variable "zone_id" {
     default = "Z09407641B27Z7IYQWK9Y"
 }
 
-variable "zone_name_name" {
+variable "zone_name" {
+    default = "ramops.online"
+}
+
+variable "domain_name" {
     default = "ramops.online"
 }
