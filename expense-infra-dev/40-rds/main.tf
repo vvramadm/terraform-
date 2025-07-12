@@ -50,7 +50,7 @@ module "records" {
 
   records = [
     {
-      name    = "mysql-${var.environment}"
+      name    = "mysql-${var.environment}" #mysql-dev.ramops.online
       type    = "CNAME"
       ttl     = 1
       records = [

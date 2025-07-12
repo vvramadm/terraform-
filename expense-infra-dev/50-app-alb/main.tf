@@ -7,7 +7,7 @@ module "alb" {
   ip_address_type     = "ipv4"
   load_balancer_type = "application"
   subnets = local.private_subnet_ids
-  create_security_group = false
+  create_security_group= false
   security_groups = [local.app_alb_sg_id]
   enable_deletion_protection = false
   tags = merge(
@@ -35,15 +35,22 @@ resource "aws_lb_listener" "http" {
 }
 
 
-resource "aws_route53_record" "app_alb" {
-  zone_id = var.zone_id
-  name    = "*.app-dev.${var.domain_name}"
-  type    = "A"
 
-  # these are ALB DNS name and zone information
-  alias {
-    name                   = module.alb.dns_name
-    zone_id                = module.alb.zone_id
-    evaluate_target_health = false
+module "records" {
+  source  = "terraform-aws-modules/route53/aws//modules/records"
+  
+  zone_name = var.zone_name
+
+  records = [
+    {
+  
+      name    = "*.app-dev.${var.domain_name}"
+      type    = "A"
+      alias = {
+      name                   = module.alb.dns_name
+      zone_id                = module.alb.zone_id
+          }
+      allow_overwrite= true
+    }
+  ]
   }
-}
