@@ -2,7 +2,7 @@ module "backend" {
  
   source  = "terraform-aws-modules/ec2-instance/aws"
   ami                    = data.aws_ami.devops.id # golden AMI
-  name = local.resource_name
+  name = "${local.resource_name}-backend"
   create_security_group = false
   vpc_security_group_ids = [local.backend_sg_id]
   instance_type          = var.instance_type
