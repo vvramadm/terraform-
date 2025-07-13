@@ -5,5 +5,5 @@ locals {
   frontend_sg_id = data.aws_ssm_parameter.frontend_sg_id.value
   private_subnet_id = split(",",data.aws_ssm_parameter.private_subnet_ids.value)[0]
    private_subnet_ids = split(",",data.aws_ssm_parameter.private_subnet_ids.value)
-  app_alb_listener_arn = data.aws_ssm_parameter.app_alb_listener_arn.value 
+  web_alb_listener_arn = data.aws_ssm_parameter.web_alb_listener_arn.value 
 }
