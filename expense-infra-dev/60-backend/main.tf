@@ -70,7 +70,7 @@ resource "null_resource" "backend_delete" {
 }
 
 resource "aws_lb_target_group" "backend" {
-  name     = local.resource_name
+  name     = "${local.resource_name}-backend-tg"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = local.vpc_id
@@ -107,7 +107,7 @@ resource "aws_launch_template" "backend" {
 }
 
 resource "aws_autoscaling_group" "backend" {
-  name                      = "${local.resource_name}-backend"
+  name                      = "${local.resource_name}-backend-asg"
   max_size                  = 4
   min_size                  = 1
   health_check_grace_period = 180 # 3 minutes for instance to intialise
