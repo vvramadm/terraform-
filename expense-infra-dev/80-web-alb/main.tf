@@ -54,19 +54,19 @@ module "records" {
   ]
   }
 
-resource "aws_lb_listener" "https" {
-  load_balancer_arn = module.web_alb.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = local.https_certificate_arn
-default_action {
-    type = "fixed-response"
+# resource "aws_lb_listener" "https" {
+#   load_balancer_arn = module.web_alb.arn
+#   port              = "443"
+#   protocol          = "HTTPS"
+#   ssl_policy        = "ELBSecurityPolicy-2016-08"
+#   certificate_arn   = local.https_certificate_arn
+# default_action {
+#     type = "fixed-response"
 
-    fixed_response {
-      content_type = "text/html"
-      message_body = "<h1>Hello, I am from webalb foxed respones </h1>"
-      status_code  = "200"
-    }
-  }
-}
+#     fixed_response {
+#       content_type = "text/html"
+#       message_body = "<h1>Hello, I am from webalb foxed respones </h1>"
+#       status_code  = "200"
+#     }
+#   }
+# }
