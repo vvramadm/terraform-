@@ -2,7 +2,7 @@ module "frontend" {
  
   source  = "terraform-aws-modules/ec2-instance/aws"
   ami                    = data.aws_ami.devops.id # golden AMI
-  name = local.resource_name
+  name = "${local.resource_name}-frontend"
   create_security_group = false
   vpc_security_group_ids = [local.frontend_sg_id]
   instance_type          = var.instance_type
