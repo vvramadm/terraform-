@@ -6,6 +6,7 @@
    instance_type          = var.instance_type
    key_name               = var.key_name
    #monitoring             = true
+   create_security_group = false
    vpc_security_group_ids = [local.bastion_sg_id]
    subnet_id              = local.public_subnet_id
 
