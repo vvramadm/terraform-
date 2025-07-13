@@ -110,7 +110,7 @@ resource "aws_autoscaling_group" "backend" {
   name                      = "${local.resource_name}-backend-asg"
   max_size                  = 4
   min_size                  = 1
-  health_check_grace_period = 180 # 3 minutes for instance to intialise
+  health_check_grace_period = 300 # 3 minutes for instance to intialise
   health_check_type         = "ELB"
   desired_capacity          = 1
   target_group_arns = [aws_lb_target_group.backend.arn]
