@@ -44,7 +44,7 @@ module "records" {
   records = [
     {
   
-      name    = "*.app-dev.${var.domain_name}"
+      name    = "*.app-dev"
       type    = "A"
       alias = {
       name                   = module.alb.dns_name
